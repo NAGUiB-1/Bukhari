@@ -49,7 +49,7 @@
 
     .grid{ margin-top:14px; display:grid; gap:12px; }
     .hero{ padding:18px; border-radius:18px; background:#f8fafc; border:1px solid #e2e8f0; text-align:center; }
-    .hero-name{ font-size:24px; font-weight:900; }
+    .hero-name{ font-size:1rem; font-weight:900; }
     .info-grid{ display:grid; grid-template-columns:1fr; gap:12px; }
     .kv{ padding:14px 16px; border-radius:16px; border:1px solid #e2e8f0; background:#f8fafc; display:flex; align-items:center; justify-content:space-between; }
     .kv.win{ background: linear-gradient(135deg, #dcfce7, #f0fdf4); border-color: #86efac; }
@@ -120,7 +120,7 @@
         if (res && res.ok) {
           const score = parseFloat(res.data.grade) || 0;
           let prizeHTML = score >= 70 
-            ? `<div class="kv win" style="grid-column: 1 / -1;"><div class="k">الاستحقاق :</div><div class="v">له / لها جائزة 🎁</div></div>` 
+            ? `<div class="kv win" style="grid-column: 1 / -1;"><div class="v">له / لها جائزة 🎁</div></div>` 
             : `<div class="kv no-win" style="grid-column: 1 / -1;"><div class="k">الاستحقاق :</div><div class="v">ليس له / ليست لها جائزة 🌹</div></div>`;
 
           out.innerHTML = `
