@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>نتيجة مسابقة القرآن الكريم</title>
+  <title>نتيجة مسابقة الإمام البخاري</title>
 
   <style>
     :root{
@@ -24,20 +24,13 @@
     
     .row{ display:flex; flex-direction:column; gap:10px; margin-top:10px; }
     
-    /* تنسيق خانة الإدخال */
     .input-group { width: 100%; flex: 1; }
     input{ 
       width:100%; padding:15px 16px; border-radius:16px; border:2px solid #e2e8f0; 
       font-size:18px; outline:none; direction: ltr; text-align: right; transition: .3s;
     }
-    /* حالة الخطأ */
-    input.error {
-      border-color: var(--bad) !important;
-      background-color: #fff1f2;
-    }
-    .error-msg {
-      color: var(--bad); font-size: 12px; margin-top: 5px; display: none; font-weight: bold;
-    }
+    input.error { border-color: var(--bad) !important; background-color: #fff1f2; }
+    .error-msg { color: var(--bad); font-size: 12px; margin-top: 5px; display: none; font-weight: bold; }
     input.error + .error-msg { display: block; }
 
     button{
@@ -49,22 +42,25 @@
 
     .grid{ margin-top:14px; display:grid; gap:12px; }
     .hero{ padding:18px; border-radius:18px; background:#f8fafc; border:1px solid #e2e8f0; text-align:center; }
-    .hero-name{ font-size:1rem; font-weight:900; }
+    .hero-name{ font-size:1.1rem; font-weight:900; color: #1e293b; }
     .info-grid{ display:grid; grid-template-columns:1fr; gap:12px; }
     .kv{ padding:14px 16px; border-radius:16px; border:1px solid #e2e8f0; background:#f8fafc; display:flex; align-items:center; justify-content:space-between; }
-    .kv.win{ background: linear-gradient(135deg, #dcfce7, #f0fdf4); border-color: #86efac; }
+    .kv.win{ background: linear-gradient(135deg, #dcfce7, #f0fdf4); border-color: #86efac; flex-direction: column; gap: 8px; align-items: center; }
     .kv.no-win{ background: #fff1f2; border-color: #fecaca; }
+    
     .k{ color:var(--muted); font-weight:800; margin-left: 10px; } 
     .v{ font-weight:900; flex:1; text-align: center; }
+    
+    .prize-time { font-size: 0.9rem; color: #15803d; background: #ffffff; padding: 6px 12px; border-radius: 10px; border: 1px solid #bbf7d0; width: 100%; text-align: center; }
 
-    @media (min-width:768px){ .wrap{ grid-template-columns:1.05fr .95fr; } .row{ flex-direction:row; align-items: flex-start; } button{ margin-top: 0; min-width:130px; } }
+    @media (min-width:768px){ .wrap{ grid-template-columns:1.05fr .95fr; } .row{ flex-direction:row; align-items: flex-start; } button{ margin-top: 0; min-width:130px; } .info-grid{ grid-template-columns:1fr 1fr; } }
   </style>
 </head>
 <body>
 
   <div class="wrap">
     <section class="card pad">
-      <h1>نتيجة مسابقة الإمام البخاري بأشمون عام ١٤٤٧هـ</h1>
+      <h1>نتيجة مسابقة الإمام البخاري بأشمون لعام ١٤٤٧هـ</h1>
       <p class="sub">يرجى كتابة الكود بالأرقام الإنجليزية فقط (0-9).</p>
       
       <div class="row">
@@ -90,12 +86,9 @@
     const codeEl = document.getElementById("code");
     const btnEl = document.getElementById("btn");
 
-    // التحقق من صحة الإدخال لحظياً
     codeEl.addEventListener("input", function() {
       const val = this.value;
-      // التحقق هل توجد أي رموز غير الأرقام الإنجليزية 0-9
       const hasError = /[^\d]/.test(val);
-      
       if (hasError && val !== "") {
         this.classList.add("error");
         btnEl.disabled = true;
@@ -110,7 +103,6 @@
       const out = document.getElementById("out");
 
       if (!val) return;
-      
       out.innerHTML = "جاري البحث...";
 
       try {
@@ -119,9 +111,27 @@
 
         if (res && res.ok) {
           const score = parseFloat(res.data.grade) || 0;
-          let prizeHTML = score >= 70 
-            ? `<div class="kv win" style="grid-column: 1 / -1;"><div class="v">له / لها جائزة 🎁</div></div>` 
-            : `<div class="kv no-win" style="grid-column: 1 / -1;"><div class="k">الاستحقاق :</div><div class="v">ليس له / ليست لها جائزة 🌹</div></div>`;
+          let statusHTML = "";
+
+          if (score >= 90 && score <= 100) {
+            statusHTML = `
+              <div class="kv win" style="grid-column: 1 / -1;">
+                <div class="v">له / لها جائزة 🎁</div>
+                <div class="prize-time"><b>موعد الجائزة :</b> الثلاثاء ٢٧ رمضان الساعة ٩:٣٠ مساءً</div>
+              </div>`;
+          } else if (score >= 70 && score <= 89) {
+            statusHTML = `
+              <div class="kv win" style="grid-column: 1 / -1;">
+                <div class="v">له / لها جائزة 🎁</div>
+                <div class="prize-time"><b>موعد الجائزة :</b> الثلاثاء ٢٧ رمضان بعد صلاة العصر مباشرة</div>
+              </div>`;
+          } else {
+            statusHTML = `
+              <div class="kv no-win" style="grid-column: 1 / -1;">
+                <div class="k">الاستحقاق :</div>
+                <div class="v">ليس له / ليست لها جائزة 🌹</div>
+              </div>`;
+          }
 
           out.innerHTML = `
             <div class="grid">
@@ -131,7 +141,7 @@
                 <div class="kv"><div class="k">الدرجة :</div><div class="v" style="direction:ltr;">${res.data.grade}</div></div>
                 <div class="kv"><div class="k">المستوى :</div><div class="v">${res.data.level}</div></div>
                 <div class="kv"><div class="k">السن :</div><div class="v">${res.data.age || '--'}</div></div>
-                ${prizeHTML}
+                ${statusHTML}
               </div>
             </div>`;
         } else {
